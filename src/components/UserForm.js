@@ -4,7 +4,9 @@ import { withFormik, Form, Field } from "formik";
 import * as Yup from "yup";
 
 function UserForm({ values, errors, touched, isSubmitting }) {
+
   const {users, setUsers} = useState([])
+  console.log(users)
 
   return (
     <>
@@ -37,6 +39,7 @@ function UserForm({ values, errors, touched, isSubmitting }) {
 
 const FormikForm = withFormik({
   mapPropsToValues({ name, email, password, tos }) {
+    
     return {
       name: name || "",
       email: email || "",
@@ -59,12 +62,11 @@ const FormikForm = withFormik({
 
   handleSubmit(values, { resetForm, setErrors, setSubmitting }) {
     if (values.email === "alreadytaken@atb.dev") {
-      setErrors({ email: "That email is already taken" });
+      setErrors({ email: "You already signed up OR you are stealing emails!" });
     } else {
       axios
       .post('https://reqres.in/api/users', values)
       .then(res => {
-        // setUsers(res.data)
         console.log(res.data, 'Your user has been added to the database!');
         resetForm();
         setSubmitting(false);
