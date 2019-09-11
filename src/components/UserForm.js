@@ -3,7 +3,7 @@ import axios from 'axios';
 import { withFormik, Form, Field } from "formik";
 import * as Yup from "yup";
 
-function Form({ values, errors, touched, isSubmitting }) {
+function UserForm({ values, errors, touched, isSubmitting }) {
   return (
     <Form>
       <div>
@@ -28,9 +28,9 @@ function Form({ values, errors, touched, isSubmitting }) {
 }
 
 const FormikForm = withFormik({
-  mapPropsToValues({ email, password, tos, meal }) {
+  mapPropsToValues({ name, email, password, tos }) {
     return {
-      meal: name || "",
+      name: name || "",
       email: email || "",
       password: password || "",
       tos: tos || false
@@ -67,6 +67,6 @@ const FormikForm = withFormik({
     }
   }
 
-})(Form);
+})(UserForm);
 
 export default FormikForm;

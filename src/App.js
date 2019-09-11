@@ -1,12 +1,11 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
 import './App.css';
-import Form from './components/Form';
+import UserForm from './components/UserForm';
 
 function App() {
   return (
     <div>
-      <Form />
+      <UserForm />
     </div>
   );
 }
