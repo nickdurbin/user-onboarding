@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { withFormik, Form, Field } from "formik";
 import * as Yup from "yup";
 
 function UserForm({ values, errors, touched, isSubmitting }) {
+  const {users, setUsers} = useState([])
+
   return (
+    <>
     <Form>
       <h1>Login Form</h1>
       <div>
@@ -25,6 +28,10 @@ function UserForm({ values, errors, touched, isSubmitting }) {
       </label>
       <button className="formButton" type="submit" disabled={isSubmitting}>Submit!</button>
     </Form>
+     <div className='usersContainer'>
+       {users}
+     </div>
+     </>
   );
 }
 
@@ -39,12 +46,15 @@ const FormikForm = withFormik({
   },
 
   validationSchema: Yup.object().shape({
+    name: Yup.string().required()
+      .min(3,"Name not valid.")
+      .required("Name is required"),
     email: Yup.string()
       .email("Email not valid")
       .required("Email is required"),
     password: Yup.string()
       .min(8, "Password must be 8 characters or longer")
-      .required("Password is required")
+      .required("Password is required"),
   }),
 
   handleSubmit(values, { resetForm, setErrors, setSubmitting }) {
@@ -54,7 +64,8 @@ const FormikForm = withFormik({
       axios
       .post('https://reqres.in/api/users', values)
       .then(res => {
-        console.log(res, 'Your user has been added to the database!');
+        // setUsers(res.data)
+        console.log(res.data, 'Your user has been added to the database!');
         resetForm();
         setSubmitting(false);
       })
