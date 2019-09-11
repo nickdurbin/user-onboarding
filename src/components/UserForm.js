@@ -6,6 +6,7 @@ import * as Yup from "yup";
 function UserForm({ values, errors, touched, isSubmitting }) {
   return (
     <Form>
+      <h1>Login Form</h1>
       <div>
         {touched.name && errors.name && <p>{errors.name}</p>}
         <Field type="name" name="name" placeholder="Name" />
@@ -22,7 +23,7 @@ function UserForm({ values, errors, touched, isSubmitting }) {
         <Field type="checkbox" name="tos" checked={values.tos} />
         Accept TOS
       </label>
-      <button className="formButton" disabled={isSubmitting}>Submit!</button>
+      <button className="formButton" type="submit" disabled={isSubmitting}>Submit!</button>
     </Form>
   );
 }
@@ -38,9 +39,6 @@ const FormikForm = withFormik({
   },
 
   validationSchema: Yup.object().shape({
-    name: Yup.string()
-      .name("Name is not a valid entry.")
-      .require("Name is required."),
     email: Yup.string()
       .email("Email not valid")
       .required("Email is required"),
@@ -56,12 +54,12 @@ const FormikForm = withFormik({
       axios
       .post('https://reqres.in/api/users', values)
       .then(res => {
-        console.log(res);
+        console.log(res, 'Your user has been added to the database!');
         resetForm();
         setSubmitting(false);
       })
       .catch(err => {
-        console.log(err);
+        console.log(err, 'Failed to send info to the database!');
         setSubmitting(false);
       });
     }
