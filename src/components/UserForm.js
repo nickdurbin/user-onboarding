@@ -5,7 +5,7 @@ import * as Yup from "yup";
 
 function UserForm({ values, errors, touched, isSubmitting, status }) {
 
-  const {users, setUsers} = useState([])
+  const [users, setUsers] = useState([])
   console.log(users)
 
   useEffect(() => {
@@ -31,12 +31,19 @@ function UserForm({ values, errors, touched, isSubmitting, status }) {
         <Field type="password" name="password" placeholder="Password" />
       </div>
       <label>
-        <Field type="checkbox" name="tos" checked={values.tos} />
-        <span>Accept TOS</span>
+        <Field className="checkbox" type="checkbox" name="tos" checked={values.tos} />
+        <span>Accept Terms</span>
       </label>
       <button className="formButton" type="submit" disabled={isSubmitting}>Submit!</button>
     </Form>
-   
+    {users.map((user, index) => {
+        return (
+          <div className='userContainer' key={index} index={index}>
+            <h1>New User Info</h1>
+            <h2>Name: {user.name}</h2>
+            <h4>Email: {user.email}</h4>
+          </div>
+      ) })}
      </>
   );
 }
