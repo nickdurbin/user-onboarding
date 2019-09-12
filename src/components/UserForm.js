@@ -18,22 +18,30 @@ function UserForm({ values, errors, touched, isSubmitting, status }) {
     <>
     <Form>
       <h1>Login Form</h1>
-      <div>
-        {touched.name && errors.name && <p className="error"> {errors.name}</p>}
-        <Field type="name" name="name" placeholder="Name" />
-      </div>
-      <div>
-        {touched.email && errors.email && <p className="error">{errors.email}</p>}
-        <Field type="email" name="email" placeholder="Email" />
-      </div>
-      <div>
-        {touched.password && errors.password && <p className="error">{errors.password}</p>}
-        <Field type="password" name="password" placeholder="Password" />
-      </div>
+
+      {touched.name && errors.name && <p className="error"> {errors.name}</p>}
+      <Field type="name" name="name" placeholder="Name" />
+
+      {touched.email && errors.email && <p className="error">{errors.email}</p>}
+      <Field type="email" name="email" placeholder="Email" />
+
+      {touched.password && errors.password && <p className="error">{errors.password}</p>}
+      <Field type="password" name="password" placeholder="Password" />
+
+      {touched.group && errors.group && <p className="error">{errors.group}</p>}
+      <Field className="dropDown" component="select" name="group">
+        <option value="" disabled>Select Group:</option>
+        <option value="full-time">Full-Time</option>
+        <option value="part-time">Part-Time</option>
+        <option value="team">Team Lead</option>
+        <option value="section">Section Lead</option>
+      </Field>
+
       <label>
         <Field className="checkbox" type="checkbox" name="tos" checked={values.tos} />
         <span>Accept Terms</span>
       </label>
+
       <button className="formButton" type="submit" disabled={isSubmitting}>Submit!</button>
     </Form>
     {users.map((user, index) => {
@@ -42,6 +50,7 @@ function UserForm({ values, errors, touched, isSubmitting, status }) {
             <h1>New User Info</h1>
             <h2>Name: {user.name}</h2>
             <h4>Email: {user.email}</h4>
+            <h4>Groups: {user.group}</h4>
           </div>
       ) })}
      </>
@@ -49,19 +58,20 @@ function UserForm({ values, errors, touched, isSubmitting, status }) {
 }
 
 export default withFormik({
-  mapPropsToValues({ name, email, password, tos }) {
+  mapPropsToValues({ name, email, password, group, tos }) {
     
     return {
       name: name || "",
       email: email || "",
       password: password || "",
+      group: group || "",
       tos: tos || false
     };
   },
 
   validationSchema: Yup.object().shape({
     name: Yup.string().required()
-      .min(3,"Name not valid.")
+      .min(3,"Name not valid")
       .required("Name is required"),
     email: Yup.string()
       .email("Email not valid")
@@ -69,11 +79,13 @@ export default withFormik({
     password: Yup.string()
       .min(8, "Password must be 8 characters or longer")
       .required("Password is required"),
+    group: Yup.string()
+      .required("Please choose a group"),
     tos: Yup.boolean().oneOf([ true ], "Please agree to Terms of Service!")
   }),
 
   handleSubmit(values, { resetForm, setErrors, setSubmitting, setStatus }) {
-    if (values.email === "alreadytaken@atb.dev") {
+    if (values.email === "waffle@syrup.com") {
       setErrors({ email: "You already signed up OR you are stealing emails!" });
     } else {
       axios
