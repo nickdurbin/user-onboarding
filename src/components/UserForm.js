@@ -1,43 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { withFormik, Form, Field } from "formik";
 import * as Yup from "yup";
 
-function UserForm({ values, errors, touched, isSubmitting }) {
+function UserForm({ values, errors, touched, isSubmitting, status }) {
 
   const {users, setUsers} = useState([])
   console.log(users)
+
+  useEffect(() => {
+    if (status) {
+      setUsers([ ...users, status ])
+    }
+  }, [status])
 
   return (
     <>
     <Form>
       <h1>Login Form</h1>
       <div>
-        {touched.name && errors.name && <p>{errors.name}</p>}
+        {touched.name && errors.name && <p className="error"> {errors.name}</p>}
         <Field type="name" name="name" placeholder="Name" />
       </div>
       <div>
-        {touched.email && errors.email && <p>{errors.email}</p>}
+        {touched.email && errors.email && <p className="error">{errors.email}</p>}
         <Field type="email" name="email" placeholder="Email" />
       </div>
       <div>
-        {touched.password && errors.password && <p>{errors.password}</p>}
+        {touched.password && errors.password && <p className="error">{errors.password}</p>}
         <Field type="password" name="password" placeholder="Password" />
       </div>
       <label>
         <Field type="checkbox" name="tos" checked={values.tos} />
-        Accept TOS
+        <span>Accept TOS</span>
       </label>
       <button className="formButton" type="submit" disabled={isSubmitting}>Submit!</button>
     </Form>
-     <div className='usersContainer'>
-       {users}
-     </div>
+   
      </>
   );
 }
 
-const FormikForm = withFormik({
+export default withFormik({
   mapPropsToValues({ name, email, password, tos }) {
     
     return {
@@ -58,15 +62,17 @@ const FormikForm = withFormik({
     password: Yup.string()
       .min(8, "Password must be 8 characters or longer")
       .required("Password is required"),
+    tos: Yup.boolean().oneOf([ true ], "Please agree to Terms of Service!")
   }),
 
-  handleSubmit(values, { resetForm, setErrors, setSubmitting }) {
+  handleSubmit(values, { resetForm, setErrors, setSubmitting, setStatus }) {
     if (values.email === "alreadytaken@atb.dev") {
       setErrors({ email: "You already signed up OR you are stealing emails!" });
     } else {
       axios
       .post('https://reqres.in/api/users', values)
       .then(res => {
+        setStatus(res.data)
         console.log(res.data, 'Your user has been added to the database!');
         resetForm();
         setSubmitting(false);
@@ -79,5 +85,3 @@ const FormikForm = withFormik({
   }
 
 })(UserForm);
-
-export default FormikForm;
